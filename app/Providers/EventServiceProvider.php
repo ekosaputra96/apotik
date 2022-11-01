@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use JeroenNoten\LaravelAdminLte\Events\BuildingMenu;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,73 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Event::listen(BuildingMenu::class, function (BuildingMenu $event) {
+            // Add some items to the menu...
+            if(auth()->user()->hasRole('owner')){
+                $event->menu->addBefore('account_setting',[
+                    'key' => 'main_navigation',
+                    'header' => 'MAIN NAVIGATION'
+                ]);
+                $event->menu->addAfter('main_navigation', [
+                    'key' => 'data_master',
+                    'text' => 'Data Master',
+                    'icon' => 'fas fa-fw fa-table'
+                ]);
+                $event->menu->addin('data_master', [
+                    'key' => 'katalog_obat',
+                    'text' => 'Katalog Obat',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-pills'
+                ]);
+                $event->menu->addin('data_master', [
+                    'key' => 'stock_obat',
+                    'text' => 'Stock Obat',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-cubes'
+                ]);
+                $event->menu->addin('data_master', [
+                    'key' => 'data_pengeluran',
+                    'text' => 'Data Pengeluaran',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-sort-amount-up-alt'
+                ]);
+                $event->menu->addin('data_master', [
+                    'key' => 'data_penjualan',
+                    'text' => 'Data Penjualan',
+                    'url' => '#',
+                    'icon' => 'fab fa-fw fa-sellsy'
+                ]);
+                $event->menu->addAfter('data_master', [
+                    'key' => 'transaksi',
+                    'text' => 'Transaksi',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-chart-pie'
+                ]);
+                $event->menu->addin('transaksi', [
+                    'key' => 'penjualan_barang',
+                    'text' => 'Penjualan Barang',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-chart-line'
+                ]);
+                $event->menu->addin('transaksi', [
+                    'key' => 'belanja_barang',
+                    'text' => 'Belanja Barang',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-cart-plus'
+                ]);
+                $event->menu->addin('transaksi', [
+                    'key' => 'laporan_pembayaran',
+                    'text' => 'Laporan Pembayaran',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-file-invoice'
+                ]);
+            }else if(auth()->user()->hasRole('gudang')){
+                return view('gudang.dashboard');
+            }else if(auth()->user()->hasRole('kasir')){
+                return view('kasir.dashboard');
+            }else{
+                return view('home');
+            }
+        });
     }
 }
