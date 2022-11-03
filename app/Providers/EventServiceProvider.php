@@ -90,9 +90,45 @@ class EventServiceProvider extends ServiceProvider
                     'icon' => 'fas fa-fw fa-file-invoice'
                 ]);
             }else if(auth()->user()->hasRole('gudang')){
-                return view('gudang.dashboard');
+                $event->menu->addBefore('account_setting',[
+                    'key' => 'main_navigation',
+                    'header' => 'MAIN NAVIGATION'
+                ]);
+                $event->menu->addAfter('main_navigation', [
+                    'key' => 'katalog_obat',
+                    'text' => 'Katalog Obat',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-pills'
+                ]);
+                $event->menu->addAfter('katalog_obat', [
+                    'key' => 'stock_obat',
+                    'text' => 'Stock Obat',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-warehouse'
+                ]);
+                $event->menu->addAfter('stock_obat', [
+                    'key' => 'opname_barang',
+                    'text' => 'Opname Barang',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-boxes'
+                ]);
             }else if(auth()->user()->hasRole('kasir')){
-                return view('kasir.dashboard');
+                $event->menu->addBefore('account_setting',[
+                    'key' => 'main_navigation',
+                    'header' => 'MAIN NAVIGATION'
+                ]);
+                $event->menu->addAfter('main_navigation', [
+                    'key' => 'stock_obat',
+                    'text' => 'Stock Obat',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-warehouse'
+                ]);
+                $event->menu->addAfter('stock_obat', [
+                    'key' => 'transaksi_penjualan',
+                    'text' => 'Transaksi Penjualan',
+                    'url' => '#',
+                    'icon' => 'fas fa-fw fa-shopping-basket'
+                ]);
             }else{
                 return view('home');
             }
